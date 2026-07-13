@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import auth.Model.UserModel;
 import auth.Repository.UserRepository;
+import auth.Security.JwtService;
 
 @RestController
 @CrossOrigin("*")
@@ -20,6 +21,9 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtService jwtService;
+
     @PostMapping("/api/user/register")
     public String registerUser(@RequestBody UserModel user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -28,13 +32,13 @@ public class UserController {
     }
 
     @PostMapping("/api/user/login")
-    public boolean loginUser(@RequestBody UserModel user) {
+    public String loginUser(@RequestBody UserModel user) {
         UserModel existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser != null &&
                 passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return true;
+            return jwtService.generateToken(existingUser.getEmail());
         } else {
-            return false;
+            return "Invalid credentials";
         }
     }
 
