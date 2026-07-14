@@ -1,4 +1,4 @@
-package auth.Model;
+package auth.Entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class UserModel {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +16,10 @@ public class UserModel {
     private String email;
     private String password;
 
-    public UserModel() {
+    public UserEntity() {
     }
 
-    public UserModel(Long id, String name, String avatar, String email, String password) {
+    public UserEntity(Long id, String name, String avatar, String email, String password) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;

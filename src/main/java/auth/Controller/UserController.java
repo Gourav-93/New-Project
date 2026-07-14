@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import auth.DTO.LoginModel;
-import auth.Model.UserModel;
+import auth.DTO.LoginRequest;
+import auth.Entity.UserEntity;
 import auth.Repository.UserRepository;
 import auth.Security.JwtService;
 
@@ -28,7 +28,7 @@ public class UserController {
     private JwtService jwtService;
 
     @PostMapping("/api/user/register")
-    public String register(@RequestBody UserModel user) {
+    public String register(@RequestBody UserEntity user) {
         String newPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(newPassword);
 
@@ -37,10 +37,10 @@ public class UserController {
     }
 
     @PostMapping("/api/user/login")
-    public String login(@RequestBody LoginModel candidate) {
-        List<UserModel> users = userRepository.findAll();
+    public String login(@RequestBody LoginRequest candidate) {
+        List<UserEntity> users = userRepository.findAll();
 
-        for (UserModel user : users) {
+        for (UserEntity user : users) {
 
             if (user.getEmail().equals(candidate.getEmail()) && passwordEncoder.matches(
                     candidate.getPassword(),

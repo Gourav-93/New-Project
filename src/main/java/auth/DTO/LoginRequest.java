@@ -1,14 +1,14 @@
 package auth.DTO;
 
-public class LoginModel {
+public class LoginRequest {
     
     private String email;
     private String password;
 
-    public LoginModel() {
+    public LoginRequest() {
     }
 
-    public LoginModel(String email, String password) {
+    public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
