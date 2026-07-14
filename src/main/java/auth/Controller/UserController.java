@@ -1,5 +1,7 @@
 package auth.Controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import auth.DTO.LoginModel;
 import auth.Model.UserModel;
 import auth.Repository.UserRepository;
 import auth.Security.JwtService;
@@ -25,21 +28,28 @@ public class UserController {
     private JwtService jwtService;
 
     @PostMapping("/api/user/register")
-    public String registerUser(@RequestBody UserModel user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public String register(@RequestBody UserModel user) {
+        String newPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(newPassword);
+
         userRepository.save(user);
-        return "User registered successfully!";
+        return jwtService.generateToken(user.getEmail());
     }
 
     @PostMapping("/api/user/login")
-    public String loginUser(@RequestBody UserModel user) {
-        UserModel existingUser = userRepository.findByEmail(user.getEmail());
-        if (existingUser != null &&
-                passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return jwtService.generateToken(existingUser.getEmail());
-        } else {
-            return "Invalid credentials";
+    public String login(@RequestBody LoginModel candidate) {
+        List<UserModel> users = userRepository.findAll();
+
+        for (UserModel user : users) {
+
+            if (user.getEmail().equals(candidate.getEmail()) && passwordEncoder.matches(
+                    candidate.getPassword(),
+                    user.getPassword())) {
+                return jwtService.generateToken(user.getEmail());
+            }
         }
+        return "Sorry";
+
     }
 
 }

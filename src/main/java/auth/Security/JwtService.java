@@ -19,18 +19,20 @@ public class JwtService {
 
     public String generateToken(String email) {
 
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+        SecretKey key = Keys.hmacShaKeyFor(
+                SECRET.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(key)
                 .compact();
     }
 
-    private String ExtractEmail(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    public String extractEmail(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(
+                SECRET.getBytes(StandardCharsets.UTF_8));
 
         return Jwts
                 .parser()
@@ -39,6 +41,16 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    public boolean validateToken(String token) {
+
+        try {
+            extractEmail(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
