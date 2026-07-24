@@ -19,13 +19,13 @@ import auth.Security.JwtService;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtService jwtService;
+    @Autowired   
+    JwtService jwtService;
 
     @PostMapping("/api/user/register")
     public String register(@RequestBody UserModel user) {
